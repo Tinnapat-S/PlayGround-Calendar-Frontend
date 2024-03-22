@@ -1,0 +1,64 @@
+.mainPage-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+}
+
+.sideBar-container {
+  width: 20%;
+  background-color: aqua;
+}
+
+.sideBar-header {
+  height: 8%;
+  background-color: azure;
+}
+
+.content-container {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-header {
+  height: 8%;
+}
+.content {
+  height: 92%;
+  background-color: chartreuse;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  padding-bottom: 0.25rem;
+}
+
+.sub-header {
+  height: 8%;
+  background-color: aquamarine;
+  /* border-radius: 2px; */
+}
+
+.calendar-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  gap: 0.25rem;
+}
+/* .calendar-container > div {
+  border-radius: 2px;
+} */
+
+.calendar {
+  height: 100%;
+  min-width: 70%;
+  background-color: black;
+}
+
+.calender-sideBar {
+  height: 100%;
+  width: 30%;
+  background-color: brown;
+}
