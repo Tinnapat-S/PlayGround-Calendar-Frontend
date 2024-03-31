@@ -5,19 +5,22 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Link from '@mui/material/Link'
-import { useMutation } from '@tanstack/react-query'
 import { joiResolver } from '@hookform/resolvers/joi'
 import { IFormInput } from './type'
-import { registerUser } from '../../../services/publicService'
 import { LoadingButton } from '@mui/lab'
 import SaveIcon from '@mui/icons-material/Save'
-interface Props {
-  onFail: (messages: string) => void
-  onSuccess: () => void
-}
+import { useAuthStore } from '../../../stores/useAuthStore'
+import { useApplicationStore } from '../../../stores/useStore'
 
-export const RegisterForm: React.FC<Props> = ({ onFail, onSuccess }) => {
-  const form = useForm<IFormInput>({
+export const RegisterForm: React.FC = () => {
+  const { register: registerUser } = useAuthStore()
+  const { loading } = useApplicationStore()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<IFormInput>({
     defaultValues: {
       email: '',
       password: '',
@@ -27,35 +30,9 @@ export const RegisterForm: React.FC<Props> = ({ onFail, onSuccess }) => {
     },
     resolver: joiResolver(schema),
   })
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors },
-  } = form
 
-  const mutation = useMutation({
-    mutationFn: registerUser,
-    onSuccess: () => {
-      onSuccess()
-      // Handle successful registration
-    },
-    onError: (error: any) => {
-      if (error.message === 'Network Error') return onFail('TRY AGAIN LATER')
-
-      //here is server throw error let check backend
-      if (error.response?.data.path) {
-        setError('root.serverError', {
-          [error.response.data.path]: error.response.data.message,
-        })
-      }
-    },
-  })
-
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    const payload = { username: data.email, password: data.password }
-    mutation.mutate(payload)
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    registerUser(data.email, data.password)
     reset()
   }
 
@@ -131,12 +108,13 @@ export const RegisterForm: React.FC<Props> = ({ onFail, onSuccess }) => {
           />
         </Grid>
       </Grid>
-      {mutation.isPending ? (
+      {loading ? (
         <LoadingButton
           loading
           loadingPosition="start"
           startIcon={<SaveIcon />}
           variant="outlined"
+          fullWidth
         >
           Save
         </LoadingButton>
@@ -150,6 +128,7 @@ export const RegisterForm: React.FC<Props> = ({ onFail, onSuccess }) => {
           Sign Up
         </Button>
       )}
+
       <Grid container justifyContent="flex-end">
         <Grid item>
           <Link href="#" variant="body2">

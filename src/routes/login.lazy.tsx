@@ -9,12 +9,28 @@ import Container from '@mui/material/Container'
 import { LoginForm } from '../components/forms/loginForm/LoginForm'
 import { useState } from 'react'
 import { Snackbar, Alert } from '@mui/material'
+import { useAuthStore } from '../stores/useAuthStore'
+import { RedirectIfAuthenticate } from '../components/redirect/RedirectIfAuthenticate.tsx'
 
 export const Route = createLazyFileRoute('/login')({
   component: Login,
 })
 
+// const fetchRefreshToken = async (): Promise<string> => {
+//   try {
+//     const response = await getAccessToken()
+//     const newAccessToken: string = response.data.accessToken
+//     if (!newAccessToken) {
+//       throw new Error('New access token not found in response')
+//     }
+//     return 'newAccessToken'
+//   } catch (error) {
+//     throw error
+//   }
+// }
+
 function Login() {
+  const { user } = useAuthStore()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<string>('')
 
@@ -34,8 +50,12 @@ function Login() {
   }
   const onSuccess = () => {
     setOpen(true)
+    setMessages('')
   }
-  return (
+
+  return user ? (
+    <RedirectIfAuthenticate />
+  ) : (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box

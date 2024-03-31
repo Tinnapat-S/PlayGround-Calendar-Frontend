@@ -13,7 +13,6 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
 import { Route as appAppLayoutImport } from './routes/(app)/_appLayout'
 
 // Create Virtual Routes
@@ -21,7 +20,6 @@ import { Route as appAppLayoutImport } from './routes/(app)/_appLayout'
 const appImport = createFileRoute('/(app)')()
 const RegisterLazyImport = createFileRoute('/register')()
 const LoginLazyImport = createFileRoute('/login')()
-const LayoutIndexLazyImport = createFileRoute('/_layout/')()
 const appAppLayoutCalendarLazyImport = createFileRoute(
   '/(app)/_appLayout/calendar',
 )()
@@ -43,16 +41,6 @@ const LoginLazyRoute = LoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
-const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LayoutIndexLazyRoute = LayoutIndexLazyImport.update({
-  path: '/',
-  getParentRoute: () => LayoutRoute,
-} as any).lazy(() => import('./routes/_layout.index.lazy').then((d) => d.Route))
-
 const appAppLayoutRoute = appAppLayoutImport.update({
   id: '/_appLayout',
   getParentRoute: () => appRoute,
@@ -71,10 +59,6 @@ const appAppLayoutCalendarLazyRoute = appAppLayoutCalendarLazyImport
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
     '/login': {
       preLoaderRoute: typeof LoginLazyImport
       parentRoute: typeof rootRoute
@@ -91,10 +75,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appAppLayoutImport
       parentRoute: typeof appRoute
     }
-    '/_layout/': {
-      preLoaderRoute: typeof LayoutIndexLazyImport
-      parentRoute: typeof LayoutImport
-    }
     '/(app)/_appLayout/calendar': {
       preLoaderRoute: typeof appAppLayoutCalendarLazyImport
       parentRoute: typeof appAppLayoutImport
@@ -105,7 +85,6 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  LayoutRoute.addChildren([LayoutIndexLazyRoute]),
   LoginLazyRoute,
   RegisterLazyRoute,
   appRoute.addChildren([

@@ -10,6 +10,7 @@ function CalendarPage() {
   return (
     <Container
       disableGutters
+      maxWidth={false}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -19,17 +20,20 @@ function CalendarPage() {
     >
       <Box
         sx={{
-          height: '85vh',
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
         }}
       >
         <SelectBar />
-        <Box sx={{ display: 'flex', gap: 2, height: '100%' }}>
-          <Box sx={{ outline: '1px solid red', flexGrow: 1, minWidth: 640 }}>
-            fds
-          </Box>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box
+            sx={{
+              outline: '1px solid red',
+              flexGrow: 1,
+              minWidth: 640,
+            }}
+          ></Box>
           <Box
             width={300}
             sx={{

@@ -4,7 +4,6 @@ import { ThemeProvider } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
 import theme from './theme'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 const router = createRouter({ routeTree })
