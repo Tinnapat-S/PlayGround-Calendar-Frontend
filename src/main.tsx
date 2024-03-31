@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { ThemeProvider } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
-import * as theme from './theme'
+import theme from './theme'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { RouterProvider, createRouter } from '@tanstack/react-router'
