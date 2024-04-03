@@ -1,11 +1,15 @@
 import AxiosPrivateInstance from '../config/axiosPrivate'
 
 export const getMe = async () => {
-  const response = await AxiosPrivateInstance.get('api/me')
-  return response.data
+  try {
+    const response = await AxiosPrivateInstance.get('/api/users/profile')
+    return response.data
+  } catch (error) {
+    console.log(error, 'getMe not pass')
+  }
 }
 
-export const getAccessToken = async (): Promise<any> => {
-  const response = await AxiosPrivateInstance.get('api/refreshAccessToken')
+export const getNewAccessToken = async (): Promise<any> => {
+  const response = await AxiosPrivateInstance.get('api/auth/refresh')
   return response.data
 }

@@ -1,5 +1,6 @@
-export const storeToken = (key: string, token: string) => {
-  localStorage.setItem(key, token)
+import { Token } from '../stores/useAuthStore'
+export const storeToken = (key: string, token: Token) => {
+  localStorage.setItem(key, JSON.stringify(token))
 }
 
 export const clearToken = (key: string) => {

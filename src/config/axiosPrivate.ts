@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'
 import { Token } from '../stores/useAuthStore'
 import { refreshToken } from '../services/authService'
+import { getToken, storeToken } from '../utilities/local-storage'
 
 const AxiosPrivateInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -8,9 +9,7 @@ const AxiosPrivateInstance = axios.create({
 
 // Set the AUTH token for any request
 AxiosPrivateInstance.interceptors.request.use((config) => {
-  const token: Token | null = JSON.parse(
-    localStorage.getItem('token') || 'null'
-  )
+  const token: Token | null = JSON.parse(getToken('token') || 'null')
   if (config.headers) {
     config.headers.Authorization = token ? `Bearer ${token.accessToken}` : ''
   }
@@ -24,22 +23,22 @@ AxiosPrivateInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     if (error.response?.status === 401 && error.config) {
-      const token: Token | null = JSON.parse(
-        localStorage.getItem('token') || 'null'
-      )
+      const token: Token | null = JSON.parse(getToken('token') || 'null')
       if (token && token.refreshToken) {
         try {
           const res = await refreshToken(token)
-          if (res.status === 200) {
-            localStorage.setItem('token', JSON.stringify(res.data))
+          if (res.status === 201) {
+            storeToken('token', res.data)
             AxiosPrivateInstance.defaults.headers.common.Authorization =
               'Bearer ' + res.data.accessToken
-            console.log(error.config)
             return await AxiosPrivateInstance(error.config)
           }
-        } catch (err) {
-          clearAuthentication()
-          console.log(err)
+        } catch (err: any) {
+          //if not refresh token << check message backend
+          if (err.response.data.message === 'Invalid refresh token') {
+            clearAuthentication()
+          }
+          console.log(err, '<<<token error')
         }
       }
     }

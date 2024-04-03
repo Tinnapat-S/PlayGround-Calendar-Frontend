@@ -8,44 +8,37 @@ import Button from '@mui/material/Button'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { joiResolver } from '@hookform/resolvers/joi'
 import { loginSchema } from './loginSchema'
-import { useMutation } from '@tanstack/react-query'
-import { loginUser } from '../../../services/publicService'
 import { LoadingButton } from '@mui/lab'
 import SaveIcon from '@mui/icons-material/Save'
-interface ILogin {
-  username: string
-  password: string
-}
+import { useAuthStore } from '../../../stores/useAuthStore'
+import { ILogin } from '../../../stores/useAuthStore'
+import { useApplicationStore } from '../../../stores/useStore'
 
-interface Props {
-  onFail: (messages: string) => void
-  onSuccess: () => void
-}
-
-export const LoginForm: React.FC<Props> = ({ onFail, onSuccess }) => {
+export const LoginForm: React.FC = () => {
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ILogin>({
-    defaultValues: { username: '', password: '' },
+    defaultValues: { email: '', password: '' },
     resolver: joiResolver(loginSchema),
   })
-
-  const mutation = useMutation({
-    mutationFn: loginUser,
-    onSuccess: () => {
-      onSuccess()
-      // Handle successful registration
-    },
-    onError: (error) => {
-      if (error.message === 'Network Error') return onFail('TRY AGAIN LATER')
-    },
-  })
+  const { login } = useAuthStore()
+  const { loading } = useApplicationStore()
+  // const mutation = useMutation({
+  //   mutationFn: loginUser,
+  //   onSuccess: () => {
+  //     onSuccess()
+  //     // Handle successful registration
+  //   },
+  //   onError: (error) => {
+  //     if (error.message === 'Network Error') return onFail('TRY AGAIN LATER')
+  //   },
+  // })
 
   const onSubmit: SubmitHandler<ILogin> = async (data) => {
-    mutation.mutate(data)
+    login(data)
     reset()
   }
 
@@ -57,17 +50,18 @@ export const LoginForm: React.FC<Props> = ({ onFail, onSuccess }) => {
       sx={{ mt: 1 }}
     >
       <TextField
-        {...register('username')}
-        error={!!errors.username}
+        {...register('email')}
+        error={!!errors.email}
         margin="normal"
         required
         fullWidth
-        id="username"
+        id="email"
         label="Email Address"
-        name="username"
-        autoComplete="username"
+        name="email"
+        autoComplete="email"
         autoFocus
       />
+
       <TextField
         {...register('password')}
         error={!!errors.password}
@@ -84,7 +78,7 @@ export const LoginForm: React.FC<Props> = ({ onFail, onSuccess }) => {
         control={<Checkbox value="remember" color="primary" />}
         label="Remember me"
       />
-      {mutation.isPending ? (
+      {loading ? (
         <LoadingButton
           loading
           loadingPosition="start"

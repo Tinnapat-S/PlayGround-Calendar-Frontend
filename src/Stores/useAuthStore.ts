@@ -1,9 +1,14 @@
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/localStorageKey'
 import { create } from 'zustand'
 import { clearToken, storeToken, getToken } from '../utilities/local-storage'
-import { registerUser } from '../services/publicService'
+import { registerUser, loginUser } from '../services/publicService'
 import { setAuthentication } from '../config/axiosPrivate'
 import { useApplicationStore } from './useStore'
+import { getMe } from '../services/privateService'
+
+export interface ILogin {
+  email: string
+  password: string
+}
 
 interface IUser {
   id: string
@@ -26,8 +31,8 @@ type AuthState = {
 //if not authenticated call api/user/me to get user
 type AuthAction = {
   restoreAuthenticate: () => void
-  storeToken: (key: string, token: string) => void
-  login: (email: string, password: string) => void
+  storeToken: (key: string, token: Token) => void
+  login: (loginData: ILogin) => void
   register: (email: string, password: string) => void
   logout: () => void
 }
@@ -43,17 +48,37 @@ const initialState: AuthState = {
   token: ({} as Token) || null,
 }
 
-export const useAuthStore = create<AuthState & AuthAction>((set) => ({
+export const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
   ...initialState,
-  restoreAuthenticate: () => {
-    //wait this
-    const accessToken = getToken(ACCESS_TOKEN)
-    const refreshToken = getToken(REFRESH_TOKEN)
-    if (accessToken && refreshToken) {
-      set({ isAuthenticated: true, token: { accessToken, refreshToken } })
+  restoreAuthenticate: async () => {
+    console.log('restore RUNning')
+    //check if token exist
+    const tokenString = getToken('token')
+    if (!tokenString) {
+      get().logout()
+      return
+    }
+
+    try {
+      const storedToken: Token = JSON.parse(tokenString)
+      if (storedToken && storedToken.accessToken) {
+        const userProfile = await getMe()
+        set({
+          isAuthenticated: true,
+          user: {
+            id: userProfile.id,
+            username: userProfile.username,
+            email: userProfile.email,
+            googleId: userProfile.googleId || null,
+          },
+        })
+      }
+    } catch (error: any) {
+      console.log(error, '<<<<this is error token expired')
+      console.log(error?.response?.data?.message)
     }
   },
-  storeToken: (key: string, token: string) => {
+  storeToken: (key: string, token: Token) => {
     storeToken(key, token)
   },
   register: async (email: string, password: string) => {
@@ -61,7 +86,7 @@ export const useAuthStore = create<AuthState & AuthAction>((set) => ({
     setLoading(true)
     try {
       const userData = await registerUser({
-        username: email,
+        email: email,
         password: password,
       })
       const token = {
@@ -69,30 +94,44 @@ export const useAuthStore = create<AuthState & AuthAction>((set) => ({
         refreshToken: userData.refreshToken,
       }
       setAuthentication(token)
-
+      get().storeToken('token', token)
       set({
         isAuthenticated: true,
         token,
         user: {
+          ///no need this user
           id: userData.id,
           username: userData.username,
           email: userData.email,
           googleId: userData.googleId || null,
         },
       })
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error.response.data.message === 'User with this email already exists'
+      ) {
+        alert('User with this email already exists')
+      }
       console.log(error)
     } finally {
       setLoading(false)
     }
   },
-  login: (email: string, password: string) => {
-    console.log('login', email, password)
+  login: async (loginData: ILogin) => {
+    try {
+      const token = await loginUser(loginData)
+      get().storeToken('token', token)
+      set({
+        isAuthenticated: true,
+        token: token,
+      })
+    } catch (err: any) {
+      alert('something went wrong please try again later')
+    }
   },
 
   logout: () => {
-    clearToken(ACCESS_TOKEN)
-    clearToken(REFRESH_TOKEN)
+    clearToken('token')
     set({ ...initialState })
   },
 }))
