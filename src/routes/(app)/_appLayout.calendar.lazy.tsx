@@ -1,17 +1,16 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
-import { Box, Button, Container } from '@mui/material'
+import { Link, createLazyFileRoute } from '@tanstack/react-router'
+import { Box, Container } from '@mui/material'
 import { SelectBar } from '../../components/SelectBar'
 import { useAuthStore } from '../../stores/useAuthStore'
+import { Calendar } from '../../components/calendar/Calendar'
+
 export const Route = createLazyFileRoute('/(app)/_appLayout/calendar')({
   component: CalendarPage,
 })
 
 function CalendarPage() {
-  const { restoreAuthenticate } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
 
-  const handleClick = () => {
-    restoreAuthenticate()
-  }
   return (
     <Container
       disableGutters
@@ -23,7 +22,6 @@ function CalendarPage() {
         padding: 2,
       }}
     >
-      <Button onClick={handleClick}>Restore authenticate</Button>
       <Box
         sx={{
           display: 'flex',
@@ -39,7 +37,15 @@ function CalendarPage() {
               flexGrow: 1,
               minWidth: 640,
             }}
-          ></Box>
+          >
+            {isAuthenticated ? (
+              // <div id="calendar">calendar</div>
+              <Calendar />
+            ) : (
+              //<Calendar />
+              <Link to={'/login'}>signin</Link>
+            )}
+          </Box>
           <Box
             width={300}
             sx={{
@@ -47,7 +53,7 @@ function CalendarPage() {
               '@media (max-width: 1240px)': { width: 250 },
             }}
           >
-            fs
+            fd
           </Box>
         </Box>
       </Box>

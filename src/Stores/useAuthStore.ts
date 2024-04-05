@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { clearToken, storeToken, getToken } from '../utilities/local-storage'
 import { registerUser, loginUser } from '../services/publicService'
 import { setAuthentication } from '../config/axiosPrivate'
-import { useApplicationStore } from './useStore'
 import { getMe } from '../services/privateService'
 
 export interface ILogin {
@@ -51,11 +50,11 @@ const initialState: AuthState = {
 export const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
   ...initialState,
   restoreAuthenticate: async () => {
-    console.log('restore RUNning')
-    //check if token exist
     const tokenString = getToken('token')
+
     if (!tokenString) {
       get().logout()
+      console.log('logout no token')
       return
     }
 
@@ -73,17 +72,16 @@ export const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
           },
         })
       }
+      console.log('restore pass')
     } catch (error: any) {
-      console.log(error, '<<<<this is error token expired')
-      console.log(error?.response?.data?.message)
+      get().logout()
+      console.log('logout')
     }
   },
   storeToken: (key: string, token: Token) => {
     storeToken(key, token)
   },
   register: async (email: string, password: string) => {
-    const { setLoading } = useApplicationStore.getState()
-    setLoading(true)
     try {
       const userData = await registerUser({
         email: email,
@@ -107,14 +105,10 @@ export const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
         },
       })
     } catch (error: any) {
-      if (
-        error.response.data.message === 'User with this email already exists'
-      ) {
-        alert('User with this email already exists')
+      if (error.response.data.message) {
+        alert(error.response.data.message)
       }
       console.log(error)
-    } finally {
-      setLoading(false)
     }
   },
   login: async (loginData: ILogin) => {
@@ -125,6 +119,7 @@ export const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
         isAuthenticated: true,
         token: token,
       })
+      console.log('logged in by log in')
     } catch (err: any) {
       alert('something went wrong please try again later')
     }

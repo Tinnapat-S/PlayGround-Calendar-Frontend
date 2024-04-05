@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2021: true }, // Change es2020 to es2021
+  env: { browser: true, es2021: true },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -15,7 +15,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    '@typescript-eslint/no-explicit-any': 'off', // Move this rule to the rules section
-    'prettier/prettier': 'error', // Ensure Prettier errors are reported
+    '@typescript-eslint/no-explicit-any': 'off',
+    'prettier/prettier': 'error',
   },
 }

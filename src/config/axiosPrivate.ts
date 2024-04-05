@@ -28,7 +28,11 @@ AxiosPrivateInstance.interceptors.response.use(
         try {
           const res = await refreshToken(token)
           if (res.status === 201) {
-            storeToken('token', res.data)
+            const newToken = {
+              accessToken: res.data.accessToken,
+              refreshToken: token.refreshToken,
+            }
+            storeToken('token', newToken)
             AxiosPrivateInstance.defaults.headers.common.Authorization =
               'Bearer ' + res.data.accessToken
             return await AxiosPrivateInstance(error.config)

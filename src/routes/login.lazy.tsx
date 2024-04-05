@@ -41,7 +41,6 @@ function Login() {
     }
     //setOpen(false)
   }
-
   return isAuthenticated ? (
     <RedirectIfAuthenticate />
   ) : (
@@ -69,7 +68,7 @@ function Login() {
           //severity={messages ? 'error' : 'success'}
           variant="filled"
         >
-          registerp
+          register
           {/* {messages ? messages : 'Register Success'} */}
         </Alert>
       </Snackbar>
