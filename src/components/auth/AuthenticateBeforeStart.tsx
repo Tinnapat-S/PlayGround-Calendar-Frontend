@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../../stores/useAuthStore'
-import { useApplicationStore } from '@/stores/useStore'
+import { useApplicationStore } from '../../stores/useStore'
 
 export const AuthenticateBeforeStart: React.FC = () => {
   const { isAuthenticated, restoreAuthenticate } = useAuthStore()

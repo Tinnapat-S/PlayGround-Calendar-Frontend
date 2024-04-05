@@ -33,16 +33,15 @@ AxiosPrivateInstance.interceptors.response.use(
               refreshToken: token.refreshToken,
             }
             storeToken('token', newToken)
-            AxiosPrivateInstance.defaults.headers.common.Authorization =
-              'Bearer ' + res.data.accessToken
-            return await AxiosPrivateInstance(error.config)
+            setAuthentication(newToken)
+            return AxiosPrivateInstance.request(error.config)
           }
         } catch (err: any) {
           //if not refresh token << check message backend
           if (err.response.data.message === 'Invalid refresh token') {
             clearAuthentication()
           }
-          console.log(err, '<<<token error')
+          return console.log(err, '<<<token error')
         }
       }
     }

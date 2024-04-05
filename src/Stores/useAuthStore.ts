@@ -119,7 +119,6 @@ export const useAuthStore = create<AuthState & AuthAction>((set, get) => ({
         isAuthenticated: true,
         token: token,
       })
-      console.log('logged in by log in')
     } catch (err: any) {
       alert('something went wrong please try again later')
     }

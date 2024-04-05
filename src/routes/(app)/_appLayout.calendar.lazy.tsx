@@ -33,7 +33,6 @@ function CalendarPage() {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Box
             sx={{
-              outline: '1px solid red',
               flexGrow: 1,
               minWidth: 640,
             }}
