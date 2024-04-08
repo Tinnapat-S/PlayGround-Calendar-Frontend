@@ -32,15 +32,6 @@ function Login() {
   const { isAuthenticated } = useAuthStore()
   //const [messages, setMessages] = useState<string>('')
 
-  const handleClose = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return
-    }
-    //setOpen(false)
-  }
   return isAuthenticated ? (
     <RedirectIfAuthenticate />
   ) : (
@@ -62,9 +53,8 @@ function Login() {
         </Typography>
         <LoginForm />
       </Box>
-      <Snackbar autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar autoHideDuration={6000}>
         <Alert
-          onClose={handleClose}
           //severity={messages ? 'error' : 'success'}
           variant="filled"
         >

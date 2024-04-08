@@ -34,17 +34,21 @@ AxiosPrivateInstance.interceptors.response.use(
             }
             storeToken('token', newToken)
             setAuthentication(newToken)
+            // Retry the failed request with the updated token
             return AxiosPrivateInstance.request(error.config)
           }
-        } catch (err: any) {
-          //if not refresh token << check message backend
-          if (err.response.data.message === 'Invalid refresh token') {
-            clearAuthentication()
+        } catch (err) {
+          if (err instanceof AxiosError) {
+            if (err.response?.data.message === 'Invalid refresh token') {
+              clearAuthentication()
+            }
           }
-          return console.log(err, '<<<token error')
+
+          return Promise.reject(err)
         }
       }
     }
+    // If the error is not related to token expiration or refresh, reject the promise with the error
     return Promise.reject(error)
   }
 )
