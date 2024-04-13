@@ -20,6 +20,9 @@ import { Route as appAppLayoutImport } from './routes/(app)/_appLayout'
 const appImport = createFileRoute('/(app)')()
 const RegisterLazyImport = createFileRoute('/register')()
 const LoginLazyImport = createFileRoute('/login')()
+const appAppLayoutNewPageLazyImport = createFileRoute(
+  '/(app)/_appLayout/newPage',
+)()
 const appAppLayoutCalendarLazyImport = createFileRoute(
   '/(app)/_appLayout/calendar',
 )()
@@ -45,6 +48,15 @@ const appAppLayoutRoute = appAppLayoutImport.update({
   id: '/_appLayout',
   getParentRoute: () => appRoute,
 } as any)
+
+const appAppLayoutNewPageLazyRoute = appAppLayoutNewPageLazyImport
+  .update({
+    path: '/newPage',
+    getParentRoute: () => appAppLayoutRoute,
+  } as any)
+  .lazy(() =>
+    import('./routes/(app)/_appLayout.newPage.lazy').then((d) => d.Route),
+  )
 
 const appAppLayoutCalendarLazyRoute = appAppLayoutCalendarLazyImport
   .update({
@@ -79,6 +91,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appAppLayoutCalendarLazyImport
       parentRoute: typeof appAppLayoutImport
     }
+    '/(app)/_appLayout/newPage': {
+      preLoaderRoute: typeof appAppLayoutNewPageLazyImport
+      parentRoute: typeof appAppLayoutImport
+    }
   }
 }
 
@@ -88,7 +104,10 @@ export const routeTree = rootRoute.addChildren([
   LoginLazyRoute,
   RegisterLazyRoute,
   appRoute.addChildren([
-    appAppLayoutRoute.addChildren([appAppLayoutCalendarLazyRoute]),
+    appAppLayoutRoute.addChildren([
+      appAppLayoutCalendarLazyRoute,
+      appAppLayoutNewPageLazyRoute,
+    ]),
   ]),
 ])
 

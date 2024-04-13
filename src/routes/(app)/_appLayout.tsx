@@ -18,7 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
-
+import { SelectBar } from '../../components/SelectBar'
 const drawerWidth = 240
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -185,6 +185,7 @@ function CalendarLayout() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, background: 'red' }}>
         <DrawerHeader />
+        <SelectBar />
         <Outlet />
       </Box>
     </Box>

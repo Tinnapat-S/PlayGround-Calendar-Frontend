@@ -1,6 +1,5 @@
 import { Link, createLazyFileRoute } from '@tanstack/react-router'
 import { Box, Container } from '@mui/material'
-import { SelectBar } from '../../components/SelectBar'
 import { useAuthStore } from '../../stores/useAuthStore'
 import { Calendar } from '../../components/calendar/Calendar'
 import { useTaskStore } from '../../stores/useTasksStore'
@@ -16,9 +15,8 @@ function CalendarPage() {
   const { getTask, isOpen } = useTaskStore()
 
   useEffect(() => {
-    if (isAuthenticated) {
-      getTask()
-    }
+    getTask()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -40,7 +38,6 @@ function CalendarPage() {
           gap: 2,
         }}
       >
-        <SelectBar />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Box
             sx={{
@@ -51,7 +48,7 @@ function CalendarPage() {
             {isOpen ? <TaskModal /> : null}
 
             {isAuthenticated ? (
-              // <div id="calendar">calendar</div>
+              //<div id="calendar">calendar</div>
               <Calendar />
             ) : (
               //<Calendar />

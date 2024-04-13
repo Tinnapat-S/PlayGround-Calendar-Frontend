@@ -1,0 +1,29 @@
+[
+  {
+    "id": "0",
+    "title": "Timed event",
+    "startAt": "2024-04-01T00:00:00",
+    "endAt": "2024-04-04T00:00:00",
+    "content": "content",
+    "type": "1",
+    "completed": false
+  },
+  {
+    "id": "1",
+    "title": "Test work",
+    "startAt": "2024-04-04T14:00:00",
+    "endAt": "2024-04-04T12:00:00",
+    "content": "content",
+    "type": "1",
+    "completed": false
+  },
+  {
+    "id": "2",
+    "title": "Timed event",
+    "startAt": "2024-04-04T14:00:00",
+    "endAt": "2024-04-04T11:00:00",
+    "content": "content",
+    "type": "1",
+    "completed": false
+  }
+]

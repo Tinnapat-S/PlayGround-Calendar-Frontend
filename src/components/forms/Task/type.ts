@@ -1,15 +1,21 @@
-import { Dayjs } from 'dayjs'
 export interface IRequestModalTask {
   title?: string
   content?: string
-  startDate?: string
-  startAt: Dayjs
-  endDate?: string
-  endAt: Dayjs
+  startAt: Date
+  endAt: Date
   completed?: boolean
   type?: string
 }
 
 export interface IResponseModalTask extends IRequestModalTask {
-  readonly id?: string
+  readonly id: string
+}
+
+export interface ICalendarFormValue {
+  startAt: Date | null
+  endAt: Date | null
+  title: string
+  content: string
+  completed: boolean
+  type: string
 }
