@@ -1,7 +1,6 @@
 import { create } from 'zustand'
-import { getAllTask } from '../services/privateService'
+import * as taskServices from '../services/privateService'
 import dayjs from 'dayjs'
-import { IRequestModalTask } from '../components/forms/Task/type'
 
 export interface ITask {
   id?: string
@@ -23,7 +22,7 @@ type TaskActions = {
   setOpen: (isOpen: boolean) => void
   getTask: () => void
   addTask: (task: ITask[]) => void
-  updateTask: (task: IRequestModalTask) => void
+  updateTask: (updateTask: IUpdateTask) => void
   deleteTask: (id: string) => void
   getTime: (time: Date) => void
 }
@@ -41,7 +40,7 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
   },
   getTask: async () => {
     try {
-      const tasks = await getAllTask()
+      const tasks = await taskServices.getAllTask()
       const transformData = tasks.map((task) => {
         return {
           id: task.id,
@@ -53,16 +52,29 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           type: task.type,
         }
       })
-      console.log(transformData, '<<<')
       set({ tasks: transformData })
     } catch (err) {
       console.log(err)
     }
   },
   addTask: async (task) => {
-    //send request => backend => type
-    console.log(task)
-    get().getTask()
+    try {
+      const transformData = task.map((task) => {
+        return {
+          title: task.title,
+          content: task.content,
+          startAt: task.start,
+          endAt: task.end,
+          completed: task.completed,
+          type: task.type,
+        }
+      })
+      await taskServices.addTask(transformData)
+      get().getTask()
+    } catch (err) {
+      console.log(err)
+      //to show error
+    }
   },
   updateTask: () => {},
   deleteTask: () => {},
@@ -71,7 +83,15 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
   },
 }))
 
-// interface FormState {
+interface IUpdateTask {
+  id: number
+  //userId: string,
+  title: string
+  content: string
+  type: number[]
+  startAt: Date
+  endAt: Date
+} // interface FormState {
 //   formData: IRequestModalTask
 // }
 
