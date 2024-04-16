@@ -1,7 +1,7 @@
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { toggleButtonGroupClasses } from '@mui/material/ToggleButtonGroup'
 import { styled } from '@mui/material/styles'
-
+import theme from '../theme'
 import { Event } from '@mui/icons-material'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { PATH } from '../constants/path'
@@ -33,7 +33,6 @@ export const SelectBar: React.FC<Props> = () => {
   // const [value, setValue] = useState<string>('')
   const navigate = useNavigate()
 
-  console.log(router.location.pathname)
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
     newValue: string
@@ -44,9 +43,9 @@ export const SelectBar: React.FC<Props> = () => {
   return (
     <Box
       sx={{
-        background: 'white',
-        paddingY: 0.5,
-        paddingX: 1,
+        background: theme.palette.background.paper,
+        paddingY: 1,
+        paddingX: 2,
         borderRadius: 1,
       }}
     >

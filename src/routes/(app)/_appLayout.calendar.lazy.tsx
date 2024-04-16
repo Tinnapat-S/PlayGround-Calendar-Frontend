@@ -6,6 +6,7 @@ import { useTaskStore } from '../../stores/useTasksStore'
 import { useEffect } from 'react'
 import { TaskModal } from '../../components/forms/Task/TaskModal'
 import { SideBar } from '../../components/SideBar'
+import theme from '../../theme'
 
 export const Route = createLazyFileRoute('/(app)/_appLayout/calendar')({
   component: CalendarPage,
@@ -28,7 +29,7 @@ function CalendarPage() {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        background: 'whitesmoke',
+        background: theme.palette.background.default,
         padding: 2,
       }}
     >
@@ -46,22 +47,17 @@ function CalendarPage() {
               minWidth: 640,
             }}
           >
+            {/* TASK MODAL */}
             {isOpen ? <TaskModal /> : null}
-
-            {isAuthenticated ? (
-              //<div id="calendar">calendar</div>
-              <Calendar />
-            ) : (
-              //<Calendar />
-              <Link to={'/login'}>signin</Link>
-            )}
+            {isAuthenticated ? <Calendar /> : <Link to={'/login'}>signin</Link>}
           </Box>
           <Box
             width={300}
             sx={{
-              '@media (max-width: 1240px)': { width: 250 },
+              '@media (max-width: 1240px)': { display: 'none' },
             }}
           >
+            {/* SIDEBAR */}
             {isAuthenticated ? <SideBar /> : null}
           </Box>
         </Box>

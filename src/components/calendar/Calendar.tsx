@@ -2,9 +2,11 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import * as taskServices from '../../services/privateService'
+import { Box } from '@mui/material'
 
 import { useTaskStore } from '../../stores/useTasksStore'
 import { useApplicationStore } from '../../stores/useStore'
+import theme from '../../theme'
 
 export const Calendar = () => {
   const { tasks, setOpen, getTime } = useTaskStore()
@@ -40,7 +42,13 @@ export const Calendar = () => {
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        background: theme.palette.background.paper,
+        padding: 1.5,
+        borderRadius: 3,
+      }}
+    >
       <FullCalendar
         plugins={[interactionPlugin, dayGridPlugin]}
         initialView="dayGridMonth"
@@ -58,6 +66,6 @@ export const Calendar = () => {
         contentHeight={600}
         eventDrop={handleDropEvent}
       />
-    </>
+    </Box>
   )
 }

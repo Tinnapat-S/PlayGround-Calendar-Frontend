@@ -183,9 +183,11 @@ function CalendarLayout() {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, background: 'red' }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <DrawerHeader />
-        <SelectBar />
+        <Box sx={{ marginTop: 2, marginX: 2 }}>
+          <SelectBar />
+        </Box>
         <Outlet />
       </Box>
     </Box>
