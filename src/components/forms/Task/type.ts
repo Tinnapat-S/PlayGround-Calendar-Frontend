@@ -6,15 +6,6 @@ export interface IRequestModalTask {
   completed?: boolean
   type?: string
 }
-//ITask
-// id?: string
-// start: Date
-// end: Date
-// title?: string
-// content?: string
-// completed?: boolean
-// type?: string
-
 export interface IResponseModalTask extends IRequestModalTask {
   readonly id: string
 }

@@ -13,7 +13,10 @@ import { ToggleButton, Typography } from '@mui/material'
 import { Event } from '@mui/icons-material'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
-
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   [`& .${toggleButtonGroupClasses.grouped}`]: {
     border: '1px solid #636571',
@@ -28,18 +31,25 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 
 export const TaskModal = () => {
   const { isOpen, setOpen, addTask, time } = useTaskStore()
-  const { register, getValues, setValue, watch, handleSubmit } =
-    useForm<ICalendarFormValue>({
-      defaultValues: {
-        title: '',
-        content: '',
-        startAt: dayjs(time).toDate(),
-        endAt: dayjs(time).add(1, 'minute').toDate(),
-        completed: false,
-        type: '1',
-      },
-    })
-  watch('type')
+  const {
+    register,
+    getValues,
+    setValue,
+    watch,
+    handleSubmit,
+    setError,
+    clearErrors,
+  } = useForm<ICalendarFormValue>({
+    defaultValues: {
+      title: '',
+      content: '',
+      startAt: dayjs(time?.startTime).toDate(),
+      endAt: dayjs(time?.endTime).toDate(),
+      completed: false,
+      type: '1',
+    },
+  })
+  watch(['type', 'startAt', 'endAt'])
   const dataInput = getValues()
   const handleChangeRadio = (
     event: React.MouseEvent<HTMLElement>,
@@ -59,6 +69,7 @@ export const TaskModal = () => {
         type: input.type,
       },
     ]
+    //need to handle update or add task
     addTask(transformData)
     setOpen(false)
   }
@@ -134,19 +145,39 @@ export const TaskModal = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
               <DateTimePicker
                 label="Start Time"
+                name="startTime"
                 disablePast
                 value={dayjs(dataInput.startAt)}
                 onChange={(newValue) => {
                   setValue('startAt', dayjs(newValue).toDate())
+                  clearErrors()
+                }}
+                onError={(error) => {
+                  if (error) {
+                    setError('startAt', {
+                      type: 'custom',
+                      message: 'Must be in the future',
+                    })
+                  }
                 }}
               />
               <DateTimePicker
                 label="End Time"
+                name="endTime"
                 minDateTime={dayjs(getValues().startAt)}
                 value={dayjs(dataInput.endAt)}
-                onChange={(newValue) =>
+                onChange={(newValue) => {
                   setValue('endAt', dayjs(newValue).toDate())
-                }
+                  clearErrors()
+                }}
+                onError={(error) => {
+                  if (error) {
+                    setError('endAt', {
+                      type: 'custom',
+                      message: 'Must be after start time',
+                    })
+                  }
+                }}
               />
             </Box>
           </Box>

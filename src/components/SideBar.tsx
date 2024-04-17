@@ -20,7 +20,7 @@ export const SideBarCard: React.FC<ISidebarCardProps> = ({
   taskData,
   index,
 }) => {
-  const formatTime = (time: Dayjs, time2: Dayjs) => {
+  const formatTime = (time: Dayjs, time2: Dayjs): string => {
     if (time.isSame(time2, 'month')) {
       return `${dayjs(time).format('MMMM D')}-${dayjs(time2).format('D, YYYY')}`
     } else if (time.isSame(time2, 'year')) {
@@ -28,7 +28,7 @@ export const SideBarCard: React.FC<ISidebarCardProps> = ({
     }
     return `${dayjs(time).format('MMMM D YYYY')}-${dayjs(time2).format('MMMM D YYYY')}`
   }
-  const calculateTimeLater = (minuteInput: number) => {
+  const calculateTimeLater = (minuteInput: number): Dayjs => {
     const currentTime = dayjs()
     return currentTime.add(minuteInput, 'minute')
   }
@@ -103,15 +103,18 @@ export const SideBar = () => {
   const todayData = tasks
     .filter((task) => {
       const taskStart = dayjs(task.start)
-      return taskStart.isAfter(currentTime) && taskStart.isBefore(tomorrow)
+      return taskStart.isBefore(tomorrow) && taskStart.isAfter(currentTime)
     })
     .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))
   const tomorrowData = tasks
-    .filter(
-      (task) =>
+    .filter((task) => {
+      const taskStart = dayjs(task.start)
+      const taskEnd = dayjs(task.end)
+      return (
         dayjs(task.start).isSame(tomorrow, 'day') ||
-        (task.start < tomorrow && task.end > tomorrow)
-    )
+        (taskStart.isBefore(tomorrow) && taskEnd.isAfter(tomorrow))
+      )
+    })
     .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))
   const otherDayData = tasks
     .filter((task) => dayjs(task.start).isAfter(tomorrow, 'day'))

@@ -15,7 +15,7 @@ export interface ITask {
 interface TaskState {
   tasks: ITask[]
   isOpen: boolean
-  time: Date | null
+  time: { startTime: Date; endTime?: Date } | null
 }
 
 type TaskActions = {
@@ -24,7 +24,7 @@ type TaskActions = {
   addTask: (task: ITask[]) => void
   updateTask: (updateTask: IUpdateTask) => void
   deleteTask: (id: string) => void
-  getTime: (time: Date) => void
+  getTime: (startTime: Date, endTime?: Date) => void
 }
 
 const initialState: TaskState = {
@@ -44,7 +44,7 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
       const transformData = tasks.map((task) => {
         return {
           id: task.id,
-          start: dayjs(task.startAt).toDate(),
+          start: dayjs(task.startAt).startOf('minute').toDate(),
           end: dayjs(task.endAt).toDate(),
           title: task.title,
           content: task.content,
@@ -52,6 +52,7 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           type: task.type,
         }
       })
+      console.log(transformData)
       set({ tasks: transformData })
     } catch (err) {
       console.log(err)
@@ -63,8 +64,11 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
         return {
           title: task.title,
           content: task.content,
+          //now it not UTC can use dayjs.tz(task.start,'utc') to convert to utc
+          //or need to convert on backend
           startAt: task.start,
           endAt: task.end,
+          //
           completed: task.completed,
           type: task.type,
         }
@@ -78,8 +82,8 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
   },
   updateTask: () => {},
   deleteTask: () => {},
-  getTime: (time) => {
-    set({ time })
+  getTime: (startTime, endTime) => {
+    set({ time: { startTime, endTime } })
   },
 }))
 

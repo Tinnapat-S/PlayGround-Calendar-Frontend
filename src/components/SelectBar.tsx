@@ -24,11 +24,10 @@ const SELECT_BAR_CONFIG = [
     href: PATH.CALENDAR,
     logo: <Event />,
   },
-  { label: 'Boxtest', href: PATH.NEW_PAGE, logo: <Event /> },
+  { label: 'Passed Task', href: PATH.NEW_PAGE, logo: <Event /> },
 ]
-interface Props {}
 
-export const SelectBar: React.FC<Props> = () => {
+export const SelectBar: React.FC = () => {
   const router = useRouterState()
   // const [value, setValue] = useState<string>('')
   const navigate = useNavigate()

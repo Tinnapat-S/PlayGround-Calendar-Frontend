@@ -68,6 +68,12 @@ dependencies:
   react-hook-form:
     specifier: ^7.51.2
     version: 7.51.2(react@18.2.0)
+  timezone:
+    specifier: link:dayjs/plugin/timezone
+    version: link:dayjs/plugin/timezone
+  utc:
+    specifier: link:dayjs/plugin/utc
+    version: link:dayjs/plugin/utc
   zustand:
     specifier: ^4.5.2
     version: 4.5.2(@types/react@18.2.67)(react@18.2.0)

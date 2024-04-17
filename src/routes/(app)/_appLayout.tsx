@@ -122,7 +122,7 @@ function CalendarLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            Calendarer
           </Typography>
         </Toolbar>
       </AppBar>

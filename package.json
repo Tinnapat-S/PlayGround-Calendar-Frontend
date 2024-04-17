@@ -33,6 +33,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.2",
+    "timezone": "link:dayjs/plugin/timezone",
+    "utc": "link:dayjs/plugin/utc",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
