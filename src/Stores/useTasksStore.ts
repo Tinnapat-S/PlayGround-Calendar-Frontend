@@ -3,11 +3,12 @@ import * as taskServices from '../services/privateService'
 import dayjs from 'dayjs'
 
 export interface ITask {
+  //form render
   id?: string
   start: Date
   end: Date
-  title?: string
-  content?: string
+  title: string
+  content: string
   completed?: boolean
   type?: string
 }
@@ -15,22 +16,23 @@ export interface ITask {
 interface TaskState {
   tasks: ITask[]
   isOpen: boolean
-  time: { startTime: Date; endTime?: Date } | null
+
+  event: ITask | null
 }
 
 type TaskActions = {
   setOpen: (isOpen: boolean) => void
   getTask: () => void
   addTask: (task: ITask[]) => void
-  updateTask: (updateTask: IUpdateTask) => void
-  deleteTask: (id: string) => void
-  getTime: (startTime: Date, endTime?: Date) => void
+  updateTask: (updateTask: ITask) => void
+  deleteTask: (id: number) => void
+  setEvent: (currentEvent?: ITask) => void
 }
 
 const initialState: TaskState = {
   tasks: [],
   isOpen: false,
-  time: null,
+  event: null,
 }
 
 export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
@@ -43,16 +45,15 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
       const tasks = await taskServices.getAllTask()
       const transformData = tasks.map((task) => {
         return {
-          id: task.id,
+          id: task.id.toString(),
           start: dayjs(task.startAt).startOf('minute').toDate(),
           end: dayjs(task.endAt).toDate(),
           title: task.title,
           content: task.content,
           completed: task.completed,
-          type: task.type,
+          type: task.type[0].toString(),
         }
       })
-      console.log(transformData)
       set({ tasks: transformData })
     } catch (err) {
       console.log(err)
@@ -70,9 +71,10 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           endAt: task.end,
           //
           completed: task.completed,
-          type: task.type,
+          type: [Number(task.type)],
         }
       })
+      console.log(transformData, 'added')
       await taskServices.addTask(transformData)
       get().getTask()
     } catch (err) {
@@ -80,46 +82,33 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
       //to show error
     }
   },
-  updateTask: () => {},
-  deleteTask: () => {},
-  getTime: (startTime, endTime) => {
-    set({ time: { startTime, endTime } })
+  updateTask: async (updateTask) => {
+    try {
+      const transformData = {
+        id: Number(updateTask.id),
+        title: updateTask.title,
+        content: updateTask.content,
+        startAt: updateTask.start,
+        endAt: updateTask.end,
+        completed: updateTask.completed,
+        type: [Number(updateTask.type)],
+      }
+
+      await taskServices.updateTask(transformData)
+      get().getTask()
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  deleteTask: async (id) => {
+    try {
+      await taskServices.deleteTask(id)
+      get().getTask()
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  setEvent: (currentEvent) => {
+    set({ event: currentEvent })
   },
 }))
-
-interface IUpdateTask {
-  id: number
-  //userId: string,
-  title: string
-  content: string
-  type: number[]
-  startAt: Date
-  endAt: Date
-} // interface FormState {
-//   formData: IRequestModalTask
-// }
-
-// interface FormAction {
-//   setFormData: (formData: IRequestModalTask) => void
-//   resetForm: () => void
-// }
-
-// const initialTasksState: FormState = {
-//   formData: {
-//     title: '',
-//     content: '',
-//     startAt: dayjs(new Date()),
-//     endAt: dayjs(new Date()),
-//     completed: false,
-//   },
-// }
-
-// export const useFormStore = create<FormState & FormAction>((set, get) => ({
-//   ...initialTasksState,
-//   setFormData: (formData: IRequestModalTask) => {
-//     set({ formData })
-//   },
-//   resetForm: () => {
-//     set({ ...initialTasksState })
-//   },
-// }))

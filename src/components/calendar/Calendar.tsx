@@ -11,19 +11,42 @@ import { useApplicationStore } from '../../stores/useStore'
 import theme from '../../theme'
 dayjs.extend(utc)
 export const Calendar = () => {
-  const { tasks, setOpen, getTime } = useTaskStore()
+  const { tasks, setOpen, setEvent } = useTaskStore()
   const { setLoading } = useApplicationStore()
 
   const handleClickDate = (selectInfo: DateClickArg) => {
-    setOpen(true)
-    const localDate = selectInfo.date
-    getTime(localDate, localDate)
+    const now = dayjs()
+    const targetDate = dayjs(selectInfo.date).isSame(now, 'day')
+      ? now.add(1, 'second')
+      : dayjs(selectInfo.date)
+
+    if (targetDate.isAfter(now)) {
+      setOpen(true)
+    } else {
+      console.log('do something')
+    }
+
+    const preEvent = {
+      id: undefined,
+      start: targetDate.toDate(),
+      end: targetDate.toDate(),
+      title: '',
+      content: '',
+      type: '1',
+    }
+    setEvent(preEvent)
   }
   const handleEventClick = (args: any) => {
     setOpen(true)
-    //get event
-    console.log(args.event._def.publicId)
-    getTime(args.event._instance.range.start, args.event._instance.range.end)
+    const preEvent = {
+      id: args.event._def.publicId,
+      start: args.event._instance.range.start,
+      end: args.event._instance.range.end,
+      title: args.event._def.title,
+      content: args.event._def.extendedProps.content,
+      type: args.event._def.extendedProps.type,
+    }
+    setEvent(preEvent)
   }
   const handleDropEvent = async (args: any) => {
     const updateEvent = {

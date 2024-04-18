@@ -30,7 +30,8 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }))
 
 export const TaskModal = () => {
-  const { isOpen, setOpen, addTask, time } = useTaskStore()
+  const { isOpen, setOpen, event, addTask, updateTask } = useTaskStore()
+  console.log(event)
   const {
     register,
     getValues,
@@ -41,12 +42,13 @@ export const TaskModal = () => {
     clearErrors,
   } = useForm<ICalendarFormValue>({
     defaultValues: {
-      title: '',
-      content: '',
-      startAt: dayjs(time?.startTime).toDate(),
-      endAt: dayjs(time?.endTime).toDate(),
+      id: event?.id,
+      title: event?.title,
+      content: event?.content,
+      startAt: dayjs(event?.start).toDate(),
+      endAt: dayjs(event?.end).toDate(),
       completed: false,
-      type: '1',
+      type: event?.type,
     },
   })
   watch(['type', 'startAt', 'endAt'])
@@ -61,6 +63,7 @@ export const TaskModal = () => {
   const onSubmit = (input: ICalendarFormValue) => {
     const transformData = [
       {
+        id: input.id,
         start: dayjs(input.startAt).toDate(),
         end: dayjs(input.endAt).toDate(),
         title: input.title,
@@ -69,8 +72,7 @@ export const TaskModal = () => {
         type: input.type,
       },
     ]
-    //need to handle update or add task
-    addTask(transformData)
+    input.id ? updateTask(transformData[0]) : addTask(transformData)
     setOpen(false)
   }
 

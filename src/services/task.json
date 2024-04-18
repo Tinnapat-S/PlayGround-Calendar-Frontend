@@ -5,7 +5,7 @@
     "startAt": "2024-04-01T00:00:00",
     "endAt": "2024-04-04T01:00:00",
     "content": "content",
-    "type": "1",
+    "type": [1],
     "completed": false
   },
   {
@@ -14,7 +14,7 @@
     "startAt": "2024-04-16T15:30:00",
     "endAt": "2024-04-18T15:00:00",
     "content": "content",
-    "type": "1",
+    "type": [1],
     "completed": false
   },
   {
@@ -23,7 +23,7 @@
     "startAt": "2024-04-15T15:15:00",
     "endAt": "2024-04-16T11:00:00",
     "content": "content",
-    "type": "1",
+    "type": [1],
     "completed": false
   },
   {
@@ -32,7 +32,7 @@
     "startAt": "2024-04-17T21:00:00",
     "endAt": "2024-04-17T23:00:00",
     "content": "content",
-    "type": "1",
+    "type": [1],
     "completed": false
   },
   {
@@ -41,7 +41,7 @@
     "startAt": "2024-04-18T00:00:00",
     "endAt": "2024-04-21T00:00:00",
     "content": "content",
-    "type": "1",
+    "type": [1],
     "completed": false
   }
 ]

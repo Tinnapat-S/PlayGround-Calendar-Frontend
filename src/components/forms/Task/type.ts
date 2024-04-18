@@ -1,20 +1,22 @@
 export interface IRequestModalTask {
-  title?: string
-  content?: string
+  id?: number
+  title: string
+  content: string
   startAt: Date
   endAt: Date
   completed?: boolean
-  type?: string
+  type: number[]
 }
 export interface IResponseModalTask extends IRequestModalTask {
-  readonly id: string
+  readonly id: number
 }
 
 export interface ICalendarFormValue {
-  startAt: Date | null
-  endAt: Date | null
+  id?: string
+  startAt: Date
+  endAt: Date
   title: string
   content: string
-  completed: boolean
+  completed?: boolean
   type: string
 }

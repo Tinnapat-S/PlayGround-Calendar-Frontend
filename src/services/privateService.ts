@@ -48,3 +48,10 @@ export const updateTask = async (updateTask: IUpdateTask) => {
   // return response
   return updateTask
 }
+
+export const deleteTask = async (id: number) => {
+  console.log(id)
+  // const response = await AxiosPrivateInstance.delete(`/api/tasks/${id}`)
+  // return response
+  return 'deleted'
+}
