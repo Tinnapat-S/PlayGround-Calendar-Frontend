@@ -49,6 +49,7 @@ export const Calendar = () => {
     setEvent(preEvent)
   }
   const handleDropEvent = async (args: any) => {
+    console.log(confirm('Are you sure? it cant be back'))
     const updateEvent = {
       id: Number(args.event._def.publicId),
       //no user id
@@ -79,7 +80,7 @@ export const Calendar = () => {
       }}
     >
       <FullCalendar
-        // timeZone="UTC"
+        timeZone="UTC"
         plugins={[interactionPlugin, dayGridPlugin]}
         initialView="dayGridMonth"
         events={tasks}
@@ -95,6 +96,22 @@ export const Calendar = () => {
         }}
         contentHeight={600}
         eventDrop={handleDropEvent}
+        eventDidMount={(event) => {
+          if (!event.isPast) return
+          if (
+            event.isPast &&
+            dayjs(event.event._instance?.range?.end).isBefore(dayjs())
+          ) {
+            console.log(event)
+            event.el.style.opacity = '0.5'
+            event.el.style.pointerEvents = 'none'
+          }
+        }}
+        selectAllow={(allDay) => {
+          const dayjsFormat = dayjs(allDay.start)
+          if (dayjsFormat.isAfter(dayjs().subtract(1, 'day'))) return true
+          return false
+        }}
       />
     </Box>
   )

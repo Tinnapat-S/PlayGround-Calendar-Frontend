@@ -91,7 +91,15 @@ export const SideBar = () => {
         taskEnd.isAfter(currentTime)
       )
     })
-    .sort((a, b) => dayjs(a.start).diff(dayjs(b.start)))
+    .sort((a, b) => {
+      if (a.colorName === 'orange' && b.colorName !== 'orange') {
+        return -1
+      }
+      if (a.colorName !== 'orange' && b.colorName === 'orange') {
+        return 1
+      }
+      return dayjs(a.start).diff(dayjs(b.start))
+    })
   const tomorrowData = tasks
     .filter((task) => {
       const taskStart = dayjs(task.start)
