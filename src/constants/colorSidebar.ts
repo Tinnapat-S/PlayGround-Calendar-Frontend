@@ -1,22 +1,26 @@
 export const color = [
   {
-    backgroundColor: 'rgba(255, 100, 0, 0.3)',
+    backgroundColorSidebar: 'rgba(255, 100, 0, 0.5)',
     color: 'rgba(255, 100, 0,1)',
     colorName: 'orange',
+    textColor: 'black',
   },
   {
-    backgroundColor: 'rgba(255, 255, 0, 0.3)',
-    color: 'rgba(255, 255, 0, 1)',
+    backgroundColorSidebar: 'rgba(255, 255, 0, 0.5)',
+    color: 'rgba(255, 255, 0,1)',
     colorName: 'yellow',
+    textColor: 'black',
   },
   {
-    backgroundColor: 'rgba(255, 0, 0, 0.3)',
+    backgroundColorSidebar: 'rgba(255, 0, 0, 0.5)',
     color: 'rgba(255, 0, 0,1)',
     colorName: 'red',
+    textColor: 'black',
   },
   {
-    backgroundColor: 'rgba(135, 206, 235, 0.5)',
+    backgroundColorSidebar: 'rgba(135, 206, 235, 0.5)',
     color: 'rgba(135, 206, 235,1)',
     colorName: 'blue',
+    textColor: 'black',
   },
 ]

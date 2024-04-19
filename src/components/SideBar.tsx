@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import theme from '../theme'
 import { ITask } from '../stores/useTasksStore'
 import dayjs, { Dayjs } from 'dayjs'
-import { color as colorSchema } from '../constants/colorSidebar'
 
 const SideBarStyledCard = styled(Box)(() => ({
   display: 'flex',
@@ -27,42 +26,13 @@ export const SideBarCard: React.FC<ISidebarCardProps> = ({ taskData }) => {
     }
     return `${dayjs(time).format('MMMM D, YYYY')}`
   }
-  const calculateTimeEarlier = (minuteInput: number): Dayjs => {
-    const currentTime = dayjs()
-    return currentTime.add(minuteInput, 'minute')
-  }
-  const getColor = (
-    taskData: ITask
-  ): { headerColor?: string; backgroundColor: string } => {
-    const beforeThirtyMinutes = calculateTimeEarlier(30)
-    if (
-      dayjs(taskData.start) < beforeThirtyMinutes &&
-      dayjs().isSame(dayjs(taskData.start), 'day')
-    ) {
-      return {
-        headerColor: colorSchema[0].color,
-        backgroundColor: colorSchema[0].backgroundColor,
-      }
-    }
-    const colorComponents = taskData.color?.split(',') || []
-    colorComponents[3] = '0.5)'
-    const backgroundColor = colorComponents.join(',')
-
-    return {
-      headerColor: taskData.color,
-      backgroundColor: backgroundColor,
-    }
-  }
-
-  const color = getColor(taskData)
   const renderDayFormat = formatTime(dayjs(taskData.start), dayjs(taskData.end))
-
   return (
-    <SideBarStyledCard sx={{ background: color.backgroundColor }}>
+    <SideBarStyledCard sx={{ background: taskData.backgroundColorSidebar }}>
       <Box
         sx={{
           width: '10px',
-          background: color.headerColor,
+          background: taskData.color,
           borderRadius: '6px 0 0 6px',
         }}
       ></Box>

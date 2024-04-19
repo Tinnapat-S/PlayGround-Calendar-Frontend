@@ -13,6 +13,8 @@ export interface ITask {
   completed?: boolean
   type?: string
   color?: string
+  backgroundColorSidebar?: string
+  colorName?: string
 }
 
 interface TaskState {
@@ -43,6 +45,24 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
   },
   getTask: async () => {
     try {
+      const calculateTimeEarlier = (minuteInput: number): Dayjs => {
+        const currentTime = dayjs()
+        return currentTime.add(minuteInput, 'minute')
+      }
+      const getColor = (taskData: any) => {
+        const beforeThirtyMinutes = calculateTimeEarlier(30)
+        if (
+          dayjs(taskData.startAt).startOf('minute') < beforeThirtyMinutes &&
+          dayjs().isSame(
+            dayjs(taskData.startAt).startOf('minute').toDate(),
+            'day'
+          )
+        ) {
+          return color[0]
+        }
+        return color[taskData.type[0]]
+      }
+
       const tasks = await taskServices.getAllTask()
       const transformData = tasks.map((task) => {
         return {
@@ -53,7 +73,7 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           content: task.content,
           completed: task.completed,
           type: task.type[0].toString(),
-          color: color[task.type[0]].color, // color picked by type
+          ...getColor(task),
         }
       })
       set({ tasks: transformData })
