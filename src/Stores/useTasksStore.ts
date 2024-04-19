@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import * as taskServices from '../services/privateService'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
+import { color } from '../constants/colorSidebar'
 
 export interface ITask {
   //form render
@@ -11,12 +12,12 @@ export interface ITask {
   content: string
   completed?: boolean
   type?: string
+  color?: string
 }
 
 interface TaskState {
   tasks: ITask[]
   isOpen: boolean
-
   event: ITask | null
 }
 
@@ -52,6 +53,7 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           content: task.content,
           completed: task.completed,
           type: task.type[0].toString(),
+          color: color[task.type[0]].color, // color picked by type
         }
       })
       set({ tasks: transformData })

@@ -15,6 +15,7 @@ import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { useApplicationStore } from '../../../stores/useStore'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -31,7 +32,8 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 
 export const TaskModal = () => {
   const { isOpen, setOpen, event, addTask, updateTask } = useTaskStore()
-  console.log(event)
+  const { setLoading } = useApplicationStore()
+
   const {
     register,
     getValues,
@@ -72,8 +74,15 @@ export const TaskModal = () => {
         type: input.type,
       },
     ]
-    input.id ? updateTask(transformData[0]) : addTask(transformData)
-    setOpen(false)
+    setLoading(true)
+    try {
+      input.id ? updateTask(transformData[0]) : addTask(transformData)
+      setOpen(false)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
