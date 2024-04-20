@@ -1,15 +1,17 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
+
 import * as taskServices from '../../services/privateService'
-import { Box } from '@mui/material'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { Box } from '@mui/material'
 
 import { useTaskStore } from '../../stores/useTasksStore'
 import { useApplicationStore } from '../../stores/useStore'
 import theme from '../../theme'
 dayjs.extend(utc)
+
 export const Calendar = () => {
   const { tasks, setOpen, setEvent } = useTaskStore()
   const { setLoading } = useApplicationStore()
@@ -48,8 +50,8 @@ export const Calendar = () => {
     }
     setEvent(preEvent)
   }
-  const handleDropEvent = async (args: any) => {
-    console.log(confirm('Are you sure? it cant be back'))
+
+  const setDropEvent = async (args: any) => {
     const updateEvent = {
       id: Number(args.event._def.publicId),
       //no user id
@@ -60,6 +62,7 @@ export const Calendar = () => {
       startAt: args.event._instance.range.start,
       endAt: args.event._instance.range.end,
     }
+
     setLoading(true)
     try {
       await taskServices.updateTask(updateEvent)
@@ -68,6 +71,17 @@ export const Calendar = () => {
       console.log(err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDropEvent = (args: any) => {
+    if (
+      dayjs(args.oldEvent._instance?.range?.end).isAfter(dayjs(), 'hour') &&
+      dayjs(args.event._instance?.range?.start).isBefore(dayjs(), 'minute')
+    ) {
+      args.revert()
+    } else {
+      setDropEvent(args)
     }
   }
 
@@ -80,7 +94,7 @@ export const Calendar = () => {
       }}
     >
       <FullCalendar
-        timeZone="UTC"
+        timeZone="Asia/Bangkok"
         plugins={[interactionPlugin, dayGridPlugin]}
         initialView="dayGridMonth"
         events={tasks}
@@ -102,7 +116,6 @@ export const Calendar = () => {
             event.isPast &&
             dayjs(event.event._instance?.range?.end).isBefore(dayjs())
           ) {
-            console.log(event)
             event.el.style.opacity = '0.5'
             event.el.style.pointerEvents = 'none'
           }

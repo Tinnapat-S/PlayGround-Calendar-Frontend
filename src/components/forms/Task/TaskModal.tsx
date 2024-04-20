@@ -155,6 +155,7 @@ export const TaskModal = () => {
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
               <DateTimePicker
+                timezone="Asia/Bangkok"
                 label="Start Time"
                 name="startTime"
                 disablePast
@@ -173,6 +174,7 @@ export const TaskModal = () => {
                 }}
               />
               <DateTimePicker
+                timezone="Asia/Bangkok"
                 label="End Time"
                 name="endTime"
                 minDateTime={dayjs(getValues().startAt)}
