@@ -11,6 +11,9 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.11.0
     version: 11.11.0(@emotion/react@11.11.4)(@types/react@18.2.67)(react@18.2.0)
+  '@fullcalendar/core':
+    specifier: ^6.1.11
+    version: 6.1.11
   '@fullcalendar/daygrid':
     specifier: ^6.1.11
     version: 6.1.11(@fullcalendar/core@6.1.11)
@@ -50,6 +53,9 @@ dependencies:
   axios:
     specifier: ^1.6.8
     version: 1.6.8
+  customParseFormat:
+    specifier: link:dayjs/plugin/customParseFormat
+    version: link:dayjs/plugin/customParseFormat
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10

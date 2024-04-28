@@ -14,6 +14,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@fullcalendar/core": "^6.1.11",
     "@fullcalendar/daygrid": "^6.1.11",
     "@fullcalendar/interaction": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
@@ -27,6 +28,7 @@
     "@tanstack/router-devtools": "^1.22.8",
     "TimePicker": "link:@mui/x-date-pickers/TimePicker",
     "axios": "^1.6.8",
+    "customParseFormat": "link:dayjs/plugin/customParseFormat",
     "dayjs": "^1.11.10",
     "fullcalendar": "^6.1.11",
     "joi": "^17.12.2",

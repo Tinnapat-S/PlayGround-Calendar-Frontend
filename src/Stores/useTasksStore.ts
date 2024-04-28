@@ -5,9 +5,22 @@ import { color } from '../constants/colorSidebar'
 
 export interface ITask {
   //form render
-  id?: string
-  start: Date
-  end: Date
+  id: number
+  start: Dayjs
+  end: Dayjs
+  title: string
+  content: string
+  completed?: boolean
+  type?: string
+  color?: string
+  backgroundColorSidebar?: string
+  colorName?: string
+}
+interface ICreateTask extends Omit<ITask, 'id'> {}
+interface IEvent {
+  id: number | null
+  start: Dayjs
+  end: Dayjs
   title: string
   content: string
   completed?: boolean
@@ -17,19 +30,28 @@ export interface ITask {
   colorName?: string
 }
 
+interface IUpdateTask {
+  id: number | null
+  start: Dayjs
+  end: Dayjs
+  title: string
+  content: string
+  completed?: boolean
+  type?: string
+}
 interface TaskState {
   tasks: ITask[]
   isOpen: boolean
-  event: ITask | null
+  event: IEvent | null
 }
 
 type TaskActions = {
   setOpen: (isOpen: boolean) => void
   getTask: () => void
-  addTask: (task: ITask[]) => void
-  updateTask: (updateTask: ITask) => void
+  addTask: (task: ICreateTask[]) => void
+  updateTask: (updateTask: IUpdateTask) => void
   deleteTask: (id: number) => void
-  setEvent: (currentEvent?: ITask) => void
+  setEvent: (currentEvent: IEvent) => void
 }
 
 const initialState: TaskState = {
@@ -64,11 +86,12 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
       }
 
       const tasks = await taskServices.getAllTask()
+
       const transformData = tasks.map((task) => {
         return {
-          id: task.id.toString(),
-          start: dayjs(task.startAt).startOf('minute').toDate(),
-          end: dayjs(task.endAt).toDate(),
+          id: task.id,
+          start: dayjs(task.startAt).utc(),
+          end: dayjs(task.endAt).utc(),
           title: task.title,
           content: task.content,
           completed: task.completed,
@@ -76,6 +99,7 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           ...getColor(task),
         }
       })
+
       set({ tasks: transformData })
     } catch (err) {
       console.log(err)
@@ -89,14 +113,12 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
           content: task.content,
           //now it not UTC can use dayjs.tz(task.start,'utc') to convert to utc
           //or need to convert on backend
-          startAt: task.start,
-          endAt: task.end,
-          //
-          completed: task.completed,
+          startAt: dayjs(task.start).utc().format(), // here
+          endAt: dayjs(task.end).utc().format(),
           type: [Number(task.type)],
         }
       })
-      console.log(transformData, 'added')
+      console.log(transformData, '<<< transformData')
       await taskServices.addTask(transformData)
       get().getTask()
     } catch (err) {
@@ -110,8 +132,8 @@ export const useTaskStore = create<TaskState & TaskActions>((set, get) => ({
         id: Number(updateTask.id),
         title: updateTask.title,
         content: updateTask.content,
-        startAt: updateTask.start,
-        endAt: updateTask.end,
+        startAt: updateTask.start.toDate(),
+        endAt: updateTask.end.toDate(),
         completed: updateTask.completed,
         type: [Number(updateTask.type)],
       }

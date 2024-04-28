@@ -65,9 +65,9 @@ export const TaskModal = () => {
   const onSubmit = (input: ICalendarFormValue) => {
     const transformData = [
       {
-        id: input.id,
-        start: dayjs(input.startAt).toDate(),
-        end: dayjs(input.endAt).toDate(),
+        id: input.id || null,
+        start: dayjs(input.startAt),
+        end: dayjs(input.endAt),
         title: input.title,
         content: input.content,
         completed: input.completed,

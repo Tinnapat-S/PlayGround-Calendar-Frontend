@@ -1,7 +1,7 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
-
+import { EventDropArg, EventClickArg } from '@fullcalendar/core'
 import * as taskServices from '../../services/privateService'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -16,7 +16,21 @@ export const Calendar = () => {
   const { tasks, setOpen, setEvent } = useTaskStore()
   const { setLoading } = useApplicationStore()
 
+  const eventTaskObject = tasks.map((item) => {
+    return {
+      ...item,
+      id: item.id.toString(),
+      title: item.title,
+      content: item.content,
+      type: item.type,
+      start: item.start.format(),
+      end: item.end.format(),
+      completed: item.completed,
+    }
+  })
+
   const handleClickDate = (selectInfo: DateClickArg) => {
+    console.log(selectInfo.date, '<<<<< Date')
     const now = dayjs()
     const targetDate = dayjs(selectInfo.date).isSame(now, 'day')
       ? now.add(1, 'second')
@@ -29,43 +43,43 @@ export const Calendar = () => {
     }
 
     const preEvent = {
-      id: undefined,
-      start: targetDate.toDate(),
-      end: targetDate.toDate(),
+      id: null,
+      start: targetDate,
+      end: targetDate,
       title: '',
       content: '',
       type: '1',
     }
     setEvent(preEvent)
   }
-  const handleEventClick = (args: any) => {
+
+  const handleEventClick = (args: EventClickArg) => {
+    const targetTaskData = tasks.find((task) => {
+      return task.id === Number.parseInt(args.event._def.publicId)
+    })
     setOpen(true)
-    const preEvent = {
-      id: args.event._def.publicId,
-      start: args.event._instance.range.start,
-      end: args.event._instance.range.end,
-      title: args.event._def.title,
-      content: args.event._def.extendedProps.content,
-      type: args.event._def.extendedProps.type,
+    if (targetTaskData) {
+      console.log(targetTaskData)
+      setEvent(targetTaskData)
     }
-    setEvent(preEvent)
   }
 
-  const setDropEvent = async (args: any) => {
-    const updateEvent = {
-      id: Number(args.event._def.publicId),
-      //no user id
-      title: args.event._def.title,
-      content: args.event._def.extendedProps.content,
-      completed: args.event._def.extendedProps.completed,
-      type: [Number(args.event._def.extendedProps.type)],
-      startAt: args.event._instance.range.start,
-      endAt: args.event._instance.range.end,
-    }
+  const setDropEvent = async (args: EventDropArg) => {
+    const targetTaskData = tasks.find(
+      (task) => task.id === Number(args.event._def.publicId)
+    )
 
     setLoading(true)
     try {
-      await taskServices.updateTask(updateEvent)
+      if (!targetTaskData) throw new Error('targetTaskData is undefined')
+      await taskServices.updateTask({
+        id: targetTaskData.id,
+        title: targetTaskData.title,
+        content: targetTaskData.content,
+        type: [Number(targetTaskData.type)],
+        startAt: targetTaskData.start.toDate(),
+        endAt: targetTaskData.end.toDate(),
+      })
       // getTask()
     } catch (err) {
       console.log(err)
@@ -74,7 +88,7 @@ export const Calendar = () => {
     }
   }
 
-  const handleDropEvent = (args: any) => {
+  const handleDropEvent = (args: EventDropArg) => {
     if (
       dayjs(args.oldEvent._instance?.range?.end).isAfter(dayjs(), 'hour') &&
       dayjs(args.event._instance?.range?.start).isBefore(dayjs(), 'minute')
@@ -94,10 +108,10 @@ export const Calendar = () => {
       }}
     >
       <FullCalendar
-        timeZone="Asia/Bangkok"
+        timeZone="local"
         plugins={[interactionPlugin, dayGridPlugin]}
         initialView="dayGridMonth"
-        events={tasks}
+        events={eventTaskObject}
         dateClick={handleClickDate}
         eventClick={handleEventClick}
         editable={true}

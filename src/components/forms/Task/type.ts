@@ -2,8 +2,8 @@ export interface IRequestModalTask {
   id?: number
   title: string
   content: string
-  startAt: Date
-  endAt: Date
+  startAt: string
+  endAt: string
   completed?: boolean
   type: number[]
 }
@@ -12,7 +12,7 @@ export interface IResponseModalTask extends IRequestModalTask {
 }
 
 export interface ICalendarFormValue {
-  id?: string
+  id: number | null
   startAt: Date
   endAt: Date
   title: string

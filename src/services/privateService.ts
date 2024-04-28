@@ -25,13 +25,14 @@ export const getAllTask = async (): Promise<IResponseModalTask[]> => {
 }
 
 export const addTask = async (newTask: IRequestModalTask[]) => {
-  console.log(newTask)
-  // const response = await AxiosPrivateInstance.post('/api/tasks', task)
-  // return response.data
-  const response = (await JSON.parse(
-    JSON.stringify(task)
-  )) as IResponseModalTask[]
-  return response
+  const newObj = { userId: 'cluc9y75f0000scnztuq9mghq', ...newTask[0] }
+
+  const response = await AxiosPrivateInstance.post('/api/tasks', newObj)
+  return response.data
+  // const response = (await JSON.parse(
+  //   JSON.stringify(task)
+  // )) as IResponseModalTask[]
+  // return response
 }
 interface IUpdateTask {
   id: number
